@@ -1,5 +1,5 @@
 const Admin = require("../models/admin");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // Used when the email doesn't exist, so the answer takes the same time either way

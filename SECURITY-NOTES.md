@@ -10,7 +10,7 @@
 - Auth: HS256 only, tokens last 8h (was 24h), a token stops working if the admin is deleted, constant-time login answer.
 - Errors never reveal stack traces or file paths. JSON body limit 10kb. API responses are `no-store`.
 - Dependencies updated (`npm audit`: 0 vulnerabilities).
-- Dead code removed; `seed.js` now uses `bcrypt` (it required a missing package).
+- Dead code removed; `seed.js` now uses `bcryptjs` (it required a missing package).
 
 ## Before you deploy
 1. On your host set `NODE_ENV=production` and `TRUST_PROXY=1` (Render, Heroku...). Without TRUST_PROXY the rate limits would treat all visitors as one person.

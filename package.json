@@ -1,20 +1,24 @@
 {
   "name": "booking-system",
+  "productName": "Hotel Booking System",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hotel booking system (web app + Windows desktop app)",
+  "author": "Hotel Booking System",
+  "main": "main.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "seed": "node seed.js",
-    "update-prices": "node updatePrices.js"
+    "update-prices": "node updatePrices.js",
+    "electron": "electron .",
+    "build": "electron-builder --win",
+    "dist": "electron-builder --win"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
@@ -23,6 +27,35 @@
     "mongoose": "^9.10.3"
   },
   "devDependencies": {
+    "electron": "^45.1.0",
+    "electron-builder": "^26.18.0",
     "nodemon": "^3.1.14"
+  },
+  "build": {
+    "appId": "com.booking.system",
+    "productName": "Hotel Booking System",
+    "npmRebuild": false,
+    "files": [
+      "main.js",
+      "index.js",
+      "package.json",
+      "config/**/*",
+      "controllers/**/*",
+      "middlewares/**/*",
+      "models/**/*",
+      "routes/**/*",
+      "utils/**/*",
+      "public/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

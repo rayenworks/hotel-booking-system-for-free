@@ -2,7 +2,7 @@
 require("dotenv").config();
 require("./config/dns");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const Admin = require("./models/admin");
 
 async function seed() {
