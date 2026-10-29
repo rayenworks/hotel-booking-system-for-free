@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage hotel rooms, capacity, floor layouts, and maintenance blackout periods.">
+  <title>Manage Rooms | Hotel Staff Portal</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Admin Navigation -->
+  <header class="site-header admin-header">
+    <div class="container header-inner">
+      <a href="/admin/bookings.html" class="brand-link">
+        <div class="brand-logo-icon" style="background: #374151;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+        </div>
+        <span class="brand-title" id="admin-nav-hotel-name">Hotel Name</span>
+      </a>
+
+      <nav class="header-nav" aria-label="Admin Navigation">
+        <a href="/admin/bookings.html" class="nav-link" id="nav-bookings">Bookings</a>
+        <a href="/admin/rooms.html" class="nav-link active" id="nav-rooms">Rooms</a>
+        <button type="button" class="btn btn-secondary btn-sm" id="admin-logout-btn" style="color: white; border-color: #4b5563; background: transparent;">
+          <span class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </span>
+          Logout
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Rooms Management Content -->
+  <main class="main-content admin-container">
+    <div class="container">
+      
+      <!-- Top Action Bar -->
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; justify-content: space-between;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.85rem;">Room Management</h1>
+            <p class="text-muted">Organize hotel rooms across all 4 floors, configure capacity tiers, and schedule maintenance blocks.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="open-add-room-btn">
+            <span class="icon-wrap" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+            + Add Room
+          </button>
+        </div>
+      </div>
+
+      <!-- Container for floors and room cards -->
+      <div id="floors-container" aria-live="polite">
+        <!-- Rendered by admin-rooms.js -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ADD / EDIT ROOM MODAL -->
+  <div id="room-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="room-modal-title" aria-hidden="true">
+    <div class="modal-container" style="max-width: 500px;">
+      
+      <div class="modal-header">
+        <h3 class="modal-title" id="room-modal-title">Add Room</h3>
+        <button type="button" class="modal-close-btn" id="room-modal-close" aria-label="Close modal">
+          <span class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <form id="room-form" class="modal-form" novalidate>
+        <div class="modal-body">
+          
+          <!-- Modal Error Banner -->
+          <div id="room-modal-error" class="alert-box alert-danger" style="display: none;" role="alert">
+            <span class="icon-wrap" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </span>
+            <span id="room-modal-error-text"></span>
+          </div>
+
+          <!-- Room Number -->
+          <div class="form-group">
+            <label for="room-number-input" class="form-label">Room Number</label>
+            <input type="text" id="room-number-input" name="roomNumber" class="input-control" placeholder="e.g. 101, 204" required>
+          </div>
+
+          <!-- Floor -->
+          <div class="form-group">
+            <label for="room-floor-select" class="form-label">Floor (1 to 4)</label>
+            <select id="room-floor-select" name="floor" class="input-control" required>
+              <option value="1">Floor 1 (Ground Tier)</option>
+              <option value="2">Floor 2 (Second Tier)</option>
+              <option value="3">Floor 3 (Third Tier)</option>
+              <option value="4">Floor 4 (Top Tier)</option>
+            </select>
+          </div>
+
+          <!-- Capacity -->
+          <div class="form-group">
+            <label for="room-capacity-select" class="form-label">Capacity (Max Guests)</label>
+            <select id="room-capacity-select" name="capacity" class="input-control" required>
+              <option value="2">2 Guests (Floor 1 default)</option>
+              <option value="3">3 Guests (Floor 2 default)</option>
+              <option value="4">4 Guests (Floor 3 default)</option>
+              <option value="5">5 Guests (Floor 4 default)</option>
+            </select>
+            <span class="text-muted" style="font-size: 0.8rem;">Auto-adjusted based on floor, but can be customized.</span>
+          </div>
+
+          <!-- Note regarding price -->
+          <div class="alert-box alert-info" style="font-size: 0.85rem; padding: 0.75rem 1rem;">
+            <span class="icon-wrap" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </span>
+            <span>Price per night is calculated automatically by the server based on capacity tier.</span>
+          </div>
+
+          <!-- Amenities -->
+          <div class="form-group">
+            <label for="room-amenities-input" class="form-label">Amenities (Comma separated)</label>
+            <input type="text" id="room-amenities-input" name="amenities" class="input-control" placeholder="wifi, heating/ac, breakfast, dinner, balcony">
+            <span class="text-muted" style="font-size: 0.8rem;">Separate tags with commas.</span>
+          </div>
+
+          <!-- Fast Add Toggle (only shown when adding) -->
+          <div id="keep-adding-wrap" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+            <input type="checkbox" id="keep-adding-checkbox" style="width: 16px; height: 16px;">
+            <label for="keep-adding-checkbox" style="font-size: 0.9rem; cursor: pointer;">Stay open to add more rooms</label>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="room-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="room-modal-submit">Save Room</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- BLOCK DATES MODAL -->
+  <div id="block-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="block-modal-title" aria-hidden="true">
+    <div class="modal-container" style="max-width: 480px;">
+      
+      <div class="modal-header">
+        <h3 class="modal-title" id="block-modal-title">Block Room Dates</h3>
+        <button type="button" class="modal-close-btn" id="block-modal-close" aria-label="Close modal">
+          <span class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <form id="block-form" class="modal-form" novalidate>
+        <div class="modal-body">
+          
+          <div id="block-modal-error" class="alert-box alert-danger" style="display: none;" role="alert">
+            <span class="icon-wrap" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </span>
+            <span id="block-modal-error-text"></span>
+          </div>
+
+          <p id="block-room-info" class="font-semibold" style="margin-bottom: 0.5rem;"></p>
+
+          <div class="form-group">
+            <label for="block-from-input" class="form-label">From Date</label>
+            <input type="date" id="block-from-input" name="from" class="input-control" required>
+          </div>
+
+          <div class="form-group">
+            <label for="block-to-input" class="form-label">To Date</label>
+            <input type="date" id="block-to-input" name="to" class="input-control" required>
+          </div>
+
+          <div class="form-group">
+            <label for="block-reason-input" class="form-label">Reason for Blocking</label>
+            <input type="text" id="block-reason-input" name="reason" class="input-control" placeholder="e.g. Renovation, Plumbing maintenance" required>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="block-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="block-modal-submit">Confirm Block</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- DELETE / CONFIRM MODAL -->
+  <div id="delete-confirm-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title" aria-hidden="true">
+    <div class="modal-container" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="delete-confirm-title">Confirm Deletion</h3>
+        <button type="button" class="modal-close-btn" id="delete-confirm-close" aria-label="Close dialog">
+          <span class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="delete-confirm-message" style="font-size: 0.95rem; line-height: 1.5;"></div>
+        <div id="delete-confirm-error" class="alert-box alert-danger" style="display: none; margin-top: 1rem;">
+          <span class="icon-wrap" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </span>
+          <span id="delete-confirm-error-text"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="delete-confirm-cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="delete-confirm-proceed">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/admin-rooms.js"></script>
+</body>
+</html>
