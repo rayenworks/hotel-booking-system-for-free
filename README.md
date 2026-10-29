@@ -40,3 +40,22 @@ This update introduces robust security measures, rate limiting, and automated bo
          │  └── Attack Signature Filters
          ▼
  🏨  Hotel Booking Application Core
+
+
+## Desktop mode
+
+The Hotel Booking System can now run as a Windows desktop app, with no browser or Node.js needed.
+
+### Install
+1. Download **Hotel Booking System Setup 1.0.0.exe** below.
+2. Run it. If Windows shows "Windows protected your PC", click **More info** → **Run anyway** (the app is not code-signed yet).
+3. On first launch, a settings file opens in Notepad. Paste your MongoDB Atlas connection string into the `MONGO_URI` line, save, and open the app again.
+
+### Requirements
+- Windows 10 or 11 (64-bit)
+- Internet connection and a MongoDB Atlas database
+- An admin account, created once with `npm run seed` from the source code
+
+### Other changes
+- Replaced `bcrypt` with `bcryptjs`, so no C++ build tools are needed (existing admin passwords still work)
+- Security updates: rate limiting, input validation and security headers
