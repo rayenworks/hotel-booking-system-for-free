@@ -14,7 +14,6 @@ This update introduces robust security measures, rate limiting, and automated bo
 - **Adaptive Rate Limiting:** Dynamic request throttling based on client IP, session behavior, and route sensitivity.
 - **Bot Attack Mitigation:** Automated detection and blocking of malicious scrapers, automated booking bots, and carding attempts.
 - **API & Route Hardening:** Strict request validation, headers sanitization, and CORS enforcement.
-- **DDoS & Scraping Resilience:** Protects inventory visibility and checkout flows from high-frequency automated requests without affecting real guests.
 
 ---
 
