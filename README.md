@@ -17,36 +17,14 @@ This update introduces robust security measures, rate limiting, and automated bo
 
 ---
 
-##  Security Architecture
-
-```text
-[ Incoming Request ]
-         │
-         ▼
- 🛡️  WAF / Reverse Proxy (Cloudflare / Nginx / Render)
-         │  ├── IP Reputation & GEO Fencing
-         │  └── Web Application Firewall
-         ▼
- ⏱️  Rate Limiter Layer (Redis Token Bucket / Leaky Bucket)
-         │  ├── Public Routes (Room Listing, Search)
-         │  ├── Sensitive Routes (Auth, OTP)
-         │  └── Critical Routes (Checkout, Reservation)
-         ▼
- 🤖  Bot Detection Engine
-         │  ├── User-Agent & Fingerprinting Check
-         │  ├── Behavioral Scoring (Honeypots, CAPTCHA trigger)
-         │  └── Attack Signature Filters
-         ▼
- 🏨  Hotel Booking Application Core
-
 
 ## Desktop mode
 
-The Hotel Booking System can now run as a Windows desktop app, with no browser or Node.js needed.
+The Hotel Booking System can now run as a Windows desktop app, with no browser
 
 ### Install
-1. Download **Hotel Booking System Setup 1.0.0.exe** below.
-2. Run it. If Windows shows "Windows protected your PC", click **More info** → **Run anyway** (the app is not code-signed yet).
+1. Download **Hotel Booking System Setup 1.0.0.exe** below
+2. Run it
 3. On first launch, a settings file opens in Notepad. Paste your MongoDB Atlas connection string into the `MONGO_URI` line, save, and open the app again.
 
 ### Requirements
@@ -55,5 +33,5 @@ The Hotel Booking System can now run as a Windows desktop app, with no browser o
 - An admin account, created once with `npm run seed` from the source code
 
 ### Other changes
-- Replaced `bcrypt` with `bcryptjs`, so no C++ build tools are needed (existing admin passwords still work)
+- Replaced `bcrypt` with `bcryptjs`
 - Security updates: rate limiting, input validation and security headers
